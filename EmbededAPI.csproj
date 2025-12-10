@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="LazyVoom.Hosting.WPF" Version="1.0.6" />
+    <PackageReference Include="LazyVoom.WPF" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
+  </ItemGroup>
+
+</Project>
