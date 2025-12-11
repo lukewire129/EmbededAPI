@@ -9,8 +9,429 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     voom:ViewModelLocator.AutoWireViewModel="True"
+    Background="White"
     mc:Ignorable="d">
-    <StackPanel>
-        <TextBox Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
-    </StackPanel>
+    <UserControl.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#1A1F3A" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="Margin" Value="10" />
+        </Style>
+
+        <Style x:Key="ControlButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="30,12" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  헤더  -->
+        <Border
+            Grid.Row="0"
+            Padding="25,0"
+            Background="#1A1F3A">
+            <Grid>
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <Ellipse
+                        Width="35"
+                        Height="35"
+                        Margin="0,0,12,0"
+                        Fill="#3B82F6" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="산업용 모니터링" />
+                </StackPanel>
+
+                <!--  현재 장비 상태  -->
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        Foreground="#8B92B0"
+                        Text="장비 상태:" />
+                    <Border Padding="15,8" CornerRadius="20">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#10B981" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RunState}" Value="1">
+                                        <Setter Property="Background" Value="#EF4444" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding RunState}" Value="2">
+                                        <Setter Property="Background" Value="#F59E0B" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding RunState}" Value="3">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="White">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="가동중" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RunState}" Value="1">
+                                            <Setter Property="Text" Value="정지" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RunState}" Value="2">
+                                            <Setter Property="Text" Value="일시정지" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RunState}" Value="99">
+                                            <Setter Property="Text" Value="데이터를 불러오는 중" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!--  메인 콘텐츠  -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  제어 버튼  -->
+            <Border Grid.Row="0" Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,15"
+                        FontSize="13"
+                        Foreground="#8B92B0"
+                        Text="장비 제어" />
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Button
+                            Background="#10B981"
+                            Command="{Binding MachineControlCommand}"
+                            CommandParameter="Start"
+                            Content="▶ 시작"
+                            Foreground="White"
+                            Style="{StaticResource ControlButtonStyle}" />
+                        <Button
+                            Background="#F59E0B"
+                            Command="{Binding MachineControlCommand}"
+                            CommandParameter="Pause"
+                            Content="⏸ 일시정지"
+                            Foreground="White"
+                            Style="{StaticResource ControlButtonStyle}" />
+                        <Button
+                            Background="#EF4444"
+                            Command="{Binding MachineControlCommand}"
+                            CommandParameter="Stop"
+                            Content="⏹ 정지"
+                            Foreground="White"
+                            Style="{StaticResource ControlButtonStyle}" />
+                        <Button
+                            Background="#10B981"
+                            Command="{Binding MachineControlCommand}"
+                            CommandParameter="Load"
+                            Content="다시 불러오기"
+                            Foreground="White"
+                            Style="{StaticResource ControlButtonStyle}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!--  상단 메트릭  -->
+            <UniformGrid
+                Grid.Row="1"
+                Columns="4"
+                Rows="1">
+                <!--  생산율  -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="생산율" />
+                        <TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="{Binding Count}" />
+                        <TextBlock
+                            Margin="0,5,0,0"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="개/시간" />
+                    </StackPanel>
+                </Border>
+
+                <!--  효율성  -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="시스템 효율" />
+                        <TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Foreground="#10B981"
+                            Text="{Binding SystemEfficiency, StringFormat={}{0:0.##}%}" />
+                        <ProgressBar
+                            Height="8"
+                            Margin="0,15,0,0"
+                            Background="#2D3250"
+                            BorderThickness="0"
+                            Foreground="#10B981"
+                            Maximum="100"
+                            Value="{Binding SystemEfficiency}" />
+                    </StackPanel>
+                </Border>
+
+                <!--  가동 기계  -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="가동 기계" />
+                        <TextBlock FontSize="32" FontWeight="Bold">
+                            <Run Foreground="White" Text="{Binding ActiveMachines}" /><Run Foreground="#8B92B0" Text="/" /><Run Foreground="#8B92B0" Text="{Binding TotalMachines}" />
+                        </TextBlock>
+                        <TextBlock
+                            Margin="0,5,0,0"
+                            FontSize="13"
+                            Foreground="#10B981"
+                            Text="{Binding OperationRate, StringFormat={}{0:0.#}% 가동중}" />
+                    </StackPanel>
+                </Border>
+
+                <!--  경고  -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="경고 상태" />
+                        <TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Foreground="#F59E0B"
+                            Text="{Binding WarningCnt}" />
+                        <TextBlock
+                            Margin="0,5,0,0"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="활성 경고" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!--  하단 섹션  -->
+            <Grid Grid.Row="2" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  온도 모니터링  -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,15"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="온도 모니터링" />
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#8B92B0"
+                                    Text="구역 A" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="#10B981"
+                                    Text="{Binding AAreaTemp, StringFormat={}{0:0.##}°C}" />
+                            </Grid>
+                            <ProgressBar
+                                Height="6"
+                                Margin="0,8,0,0"
+                                Background="#2D3250"
+                                BorderThickness="0"
+                                Foreground="#10B981"
+                                Maximum="100"
+                                Value="{Binding AAreaTemp}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#8B92B0"
+                                    Text="구역 B" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="#10B981"
+                                    Text="{Binding BAreaTemp, StringFormat={}{0:0.##}°C}" />
+                            </Grid>
+                            <ProgressBar
+                                Height="6"
+                                Margin="0,8,0,0"
+                                Background="#2D3250"
+                                BorderThickness="0"
+                                Foreground="#10B981"
+                                Maximum="100"
+                                Value="{Binding BAreaTemp}" />
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Grid>
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#8B92B0"
+                                    Text="구역 C" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="#F59E0B"
+                                    Text="{Binding CAreaTemp, StringFormat={}{0:0.##}°C}" />
+                            </Grid>
+                            <ProgressBar
+                                Height="6"
+                                Margin="0,8,0,0"
+                                Background="#2D3250"
+                                BorderThickness="0"
+                                Foreground="#F59E0B"
+                                Maximum="100"
+                                Value="{Binding CAreaTemp}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!--  전력 소비  -->
+                <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontSize="13"
+                            Foreground="#8B92B0"
+                            Text="전력 소비" />
+                        <TextBlock
+                            Margin="0,0,0,20"
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="{Binding TotalPower, StringFormat={}{0:0.##} kW}" />
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#8B92B0"
+                                    Text="생산 라인" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="13"
+                                    Foreground="White"
+                                    Text="{Binding ProductionPercent, StringFormat={}{0:0.##} %}" />
+                            </Grid>
+                            <ProgressBar
+                                Height="8"
+                                Margin="0,8,0,0"
+                                Background="#2D3250"
+                                BorderThickness="0"
+                                Foreground="#3B82F6"
+                                Maximum="100"
+                                Value="{Binding ProductionPercent}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <Grid>
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#8B92B0"
+                                    Text="공조 시스템" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="13"
+                                    Foreground="White"
+                                    Text="{Binding HvacPercent, StringFormat={}{0:0.##} %}" />
+                            </Grid>
+                            <ProgressBar
+                                Height="8"
+                                Margin="0,8,0,0"
+                                Background="#2D3250"
+                                BorderThickness="0"
+                                Foreground="#10B981"
+                                Maximum="100"
+                                Value="{Binding HvacPercent}" />
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Grid>
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#8B92B0"
+                                    Text="조명" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="13"
+                                    Foreground="White"
+                                    Text="{Binding LightPercent, StringFormat={}{0:0.##} %}" />
+                            </Grid>
+                            <ProgressBar
+                                Height="8"
+                                Margin="0,8,0,0"
+                                Background="#2D3250"
+                                BorderThickness="0"
+                                Foreground="#8B5CF6"
+                                Maximum="100"
+                                Value="{Binding LightPercent}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>

@@ -1,0 +1,14 @@
+### GET 요청 테스트
+GET http://127.0.0.1:8081/data
+Accept: application/json
+
+### POST 요청 테스트 (시작)
+POST http://127.0.0.1:8081/control?state=start
+### POST 요청 테스트 (일시정지)
+POST http://127.0.0.1:8081/control?state=stop
+
+### POST 요청 테스트 (정지)
+POST http://127.0.0.1:8081/control?state=pause
+
+### POST 요청 테스트 (다시 불러오기)
+POST http://127.0.0.1:8081/control?state=load

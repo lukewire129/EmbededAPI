@@ -27,13 +27,38 @@ namespace EmbededAPI.Api
             _app.MapGet ("/data", () =>
             {
                 var vm = this._provider.GetService<MainViewModel> ();
-                return Results.Ok ($"현재 Data는 {vm.Text} 입니다.");
+                return Results.Ok (new
+                {
+                    runState = vm.RunState,
+                    count = vm.Count,
+                    systemEfficiency = vm.SystemEfficiency,
+                    totalMachines = vm.TotalMachines,
+                    activeMachines = vm.ActiveMachines,
+                    operationRate = vm.OperationRate,
+                    warningCnt = vm.WarningCnt,
+                    aAreaTemp = vm.AAreaTemp,
+                    bAreaTemp = vm.BAreaTemp,
+                    cAreaTemp = vm.CAreaTemp,
+                    totalPower = vm.TotalPower,
+                    productionPercent = vm.ProductionPercent,
+                    hvacPercent = vm.HvacPercent,
+                    lightPercent = vm.LightPercent,
+                });
             });
-            _app.MapPost ("/data", ([FromQuery]string text) =>
+
+            _app.MapPost ("/control", ([FromQuery]string state) =>
             {
                 var vm = this._provider.GetService<MainViewModel> ();
-                vm.UpdateTextCommand.Execute (text);
-                return Results.Ok($"{text} 로 변경하였습니다.");
+
+                vm.MachineControlCommand.Execute (state);
+                var _state = vm.RunState switch
+                {
+                    0 => "가동중",
+                    1 => "정지",
+                    2 => "일시정지",
+                    99 => "데이터를 불러오는 중"
+                };
+                return Results.Ok($"{_state} 로 변경하였습니다.");
             });
 
             _app.Run ("http://127.0.0.1:8081");
