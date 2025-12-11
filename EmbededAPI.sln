@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36804.6 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmbededAPI", "EmbededAPI.csproj", "{6E759059-74F4-46EB-B6D9-4B09CBD25085}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmbededAPI", "src\EmbededAPI.csproj", "{6E759059-74F4-46EB-B6D9-4B09CBD25085}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

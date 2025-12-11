@@ -5,6 +5,7 @@ namespace EmbededAPI.ViewModels;
 
 public partial  class MainViewModel : ObservableObject
 {
+    [ObservableProperty] bool isRun;
     [ObservableProperty] string text;
     public MainViewModel()
     {
@@ -12,8 +13,8 @@ public partial  class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void UpdateText(string text)
+    private void MachineRun(bool isRun)
     {
-        this.Text = text;
+        this.IsRun = isRun;
     }
 }
